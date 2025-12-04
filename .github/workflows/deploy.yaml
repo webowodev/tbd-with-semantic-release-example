@@ -3,29 +3,22 @@ name: Deploy
 on:
     release:
         types: [created]
+    workflow_dispatch:
+        inputs:
+            promote_from_staging:
+                description: "Promote staging release to production"
+                required: true
+                type: boolean
+                default: false
+            release_tag:
+                description: "Release tag to promote"
+                required: false
+                type: string
 
 jobs:
-    prepare:
-        name: Prepare Deployment
+    deploy-staging:
+        if: github.event_name == 'release' && github.event.release.prerelease == true
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            id-token: write
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Prepare deployment
-              run: |
-                  echo "Preparing deployment for release ${{ github.event.release.tag_name }}"
-                  # Add any preparation steps here if needed
-    staging:
-        if: github.event_name != 'workflow_dispatch'
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            id-token: write
         environment: staging
 
         steps:
@@ -43,13 +36,12 @@ jobs:
                   echo "Release: ${{ github.event.release.tag_name }}"
                   echo "To promote to production, go to Actions > Deploy > Run workflow"
 
-    production:
-        if: github.event_name == 'workflow_dispatch' && inputs.promote_from_staging == true
+    deploy-production:
+        if: |
+            (github.event_name == 'release' && github.event.release.prerelease == false) ||
+            (github.event_name == 'workflow_dispatch' && inputs.promote_from_staging == true)
         runs-on: ubuntu-latest
         environment: production
-        permissions:
-            contents: read
-            id-token: write
 
         steps:
             - name: Checkout code
