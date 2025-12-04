@@ -5,6 +5,21 @@ on:
         types: [created]
 
 jobs:
+    prepare:
+        name: Prepare Deployment
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Prepare deployment
+              run: |
+                  echo "Preparing deployment for release ${{ github.event.release.tag_name }}"
+                  # Add any preparation steps here if needed
     staging:
         if: github.event_name != 'workflow_dispatch'
         runs-on: ubuntu-latest
