@@ -6,3 +6,5 @@
 <p>a foo feature</p>
 
 <p>fix foo feature</p>
+
+<p>a bar feature</p>
