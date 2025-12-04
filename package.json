@@ -1,7 +1,7 @@
 {
 	"name": "tbd-with-semantic-release-example",
 	"private": true,
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
